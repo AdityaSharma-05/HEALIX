@@ -31,6 +31,12 @@ npm run dev:api
 - Published clinics API: `http://localhost:4000/clinics?city=moradabad`
 - Search clinics: `http://localhost:4000/clinics?city=moradabad&q=dentist`
 - Filter by specialty slug: `http://localhost:4000/clinics?city=moradabad&specialty=dentist`
+- Submit clinic onboarding: `POST http://localhost:4000/clinics/onboarding`
+- Review a clinic: `POST http://localhost:4000/clinics/:clinicId/review`
+
+The clinic review endpoint requires the development-only `x-admin-key` header
+matching `ADMIN_API_KEY`. Replace this temporary mechanism with authenticated
+admin RBAC before production.
 
 ## Database
 

@@ -68,10 +68,24 @@ model Clinic {
   city               City                     @relation(fields: [cityId], references: [id])
   specialties        ClinicSpecialty[]
   doctors            Doctor[]
+  verifications      ClinicVerification[]
 
   @@unique([cityId, slug])
   @@index([cityId, verificationStatus, isPublished])
   @@index([name])
+}
+
+model ClinicVerification {
+  id         String                   @id @default(cuid())
+  clinicId   String
+  status     ClinicVerificationStatus
+  notes      String?
+  reviewedAt DateTime?
+  createdAt  DateTime                 @default(now())
+  clinic     Clinic                   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@index([clinicId, createdAt])
+  @@index([status, createdAt])
 }
 
 model ClinicSpecialty {
