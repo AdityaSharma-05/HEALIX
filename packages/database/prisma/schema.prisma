@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ClinicVerificationStatus {
+  DRAFT
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+
+enum DoctorVerificationStatus {
+  DRAFT
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+
+model City {
+  id        String   @id @default(cuid())
+  name      String
+  state     String
+  country   String   @default("India")
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  clinics   Clinic[]
+
+  @@index([name, state])
+}
+
+model Specialty {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  clinics     ClinicSpecialty[]
+  doctors     DoctorSpecialty[]
+}
+
+model Clinic {
+  id                 String                   @id @default(cuid())
+  cityId             String
+  name               String
+  slug               String
+  description        String?
+  address            String
+  locality           String?
+  latitude           Decimal?                 @db.Decimal(10, 7)
+  longitude          Decimal?                 @db.Decimal(10, 7)
+  phone              String?
+  email              String?
+  consultationFeeMin Int?
+  consultationFeeMax Int?
+  verificationStatus ClinicVerificationStatus @default(DRAFT)
+  isPublished        Boolean                  @default(false)
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  city               City                     @relation(fields: [cityId], references: [id])
+  specialties        ClinicSpecialty[]
+  doctors            Doctor[]
+
+  @@unique([cityId, slug])
+  @@index([cityId, verificationStatus, isPublished])
+  @@index([name])
+}
+
+model ClinicSpecialty {
+  clinicId    String
+  specialtyId String
+  clinic      Clinic    @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  specialty   Specialty @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
+
+  @@id([clinicId, specialtyId])
+}
+
+model Doctor {
+  id                 String                   @id @default(cuid())
+  clinicId           String
+  name               String
+  slug               String
+  qualifications     String?
+  registrationNumber  String?
+  verificationStatus DoctorVerificationStatus @default(DRAFT)
+  isPublished        Boolean                  @default(false)
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  clinic             Clinic                   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  specialties        DoctorSpecialty[]
+
+  @@unique([clinicId, slug])
+  @@index([clinicId, verificationStatus, isPublished])
+  @@index([name])
+}
+
+model DoctorSpecialty {
+  doctorId    String
+  specialtyId String
+  doctor      Doctor    @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  specialty   Specialty @relation(fields: [specialtyId], references: [id], onDelete: Cascade)
+
+  @@id([doctorId, specialtyId])
+}

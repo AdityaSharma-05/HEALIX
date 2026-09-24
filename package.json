@@ -1,0 +1,23 @@
+{
+  "name": "healix",
+  "private": true,
+  "version": "0.1.0",
+  "description": "India-first healthcare clinic discovery and appointment marketplace",
+  "workspaces": [
+    "apps/web",
+    "apps/api",
+    "packages/database"
+  ],
+  "scripts": {
+    "dev:web": "npm --workspace @healix/web run dev",
+    "dev:api": "npm --workspace @healix/api run start:dev",
+    "build": "npm run build:web && npm run build:api",
+    "build:web": "npm --workspace @healix/web run build",
+    "build:api": "npm --workspace @healix/api run build",
+    "lint": "npm run lint:web && npm run lint:api",
+    "lint:web": "npm --workspace @healix/web run lint",
+    "lint:api": "npm --workspace @healix/api run lint",
+    "db:generate": "npm --workspace @healix/database run generate",
+    "db:seed": "npm --workspace @healix/database run seed"
+  }
+}
