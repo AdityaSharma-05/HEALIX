@@ -29,6 +29,8 @@ npm run dev:api
 - Website: `http://localhost:3000`
 - API health: `http://localhost:4000/health`
 - Published clinics API: `http://localhost:4000/clinics?city=moradabad`
+- Search clinics: `http://localhost:4000/clinics?city=moradabad&q=dentist`
+- Filter by specialty slug: `http://localhost:4000/clinics?city=moradabad&specialty=dentist`
 
 ## Database
 

@@ -162,6 +162,10 @@ h2 {
   padding-top: 76px;
 }
 
+.section-heading {
+  min-height: 86px;
+}
+
 .clinic-grid {
   display: grid;
   gap: 16px;

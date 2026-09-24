@@ -6,7 +6,11 @@ export class ClinicsController {
   constructor(private readonly clinicsService: ClinicsService) {}
 
   @Get()
-  findPublished(@Query("city") citySlug?: string) {
-    return this.clinicsService.findPublished(citySlug);
+  findPublished(
+    @Query("city") citySlug?: string,
+    @Query("q") query?: string,
+    @Query("specialty") specialtySlug?: string
+  ) {
+    return this.clinicsService.findPublished(citySlug, query, specialtySlug);
   }
 }

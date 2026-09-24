@@ -10,16 +10,25 @@ type Clinic = {
   specialties: Array<{ specialty: { name: string } }>;
 };
 
+type FeaturedClinicsProps = {
+  query: string;
+};
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
-export function FeaturedClinics() {
+export function FeaturedClinics({ query }: FeaturedClinicsProps) {
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
   useEffect(() => {
     let active = true;
 
-    fetch(`${apiUrl}/clinics?city=moradabad`)
+    const params = new URLSearchParams({ city: "moradabad" });
+    if (query.trim()) {
+      params.set("q", query.trim());
+    }
+
+    fetch(`${apiUrl}/clinics?${params.toString()}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("The clinic service returned an error.");
@@ -41,13 +50,15 @@ export function FeaturedClinics() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [query]);
 
   return (
     <section className="featured-clinics" aria-labelledby="featured-clinics-heading">
-      <div>
+      <div className="section-heading">
         <p className="eyebrow">Verified providers</p>
-        <h2 id="featured-clinics-heading">Clinics in Moradabad</h2>
+        <h2 id="featured-clinics-heading">
+          {query ? `Results for “${query}”` : "Clinics in Moradabad"}
+        </h2>
       </div>
 
       {status === "loading" && <p className="state-message">Loading clinics...</p>}
