@@ -28,6 +28,7 @@ npm run dev:api
 
 - Website: `http://localhost:3000`
 - API health: `http://localhost:4000/health`
+- Authenticated user check: `GET http://localhost:4000/auth/me`
 - Published clinics API: `http://localhost:4000/clinics?city=moradabad`
 - Search clinics: `http://localhost:4000/clinics?city=moradabad&q=dentist`
 - Filter by specialty slug: `http://localhost:4000/clinics?city=moradabad&specialty=dentist`
@@ -44,6 +45,16 @@ The token must contain an `app_metadata.role` or `user_metadata.role` value of
 `ADMIN`. Configure `SUPABASE_JWT_SECRET` in the API environment. This role
 check is application authorization; Supabase remains responsible for issuing
 and managing identities.
+
+To verify a configured Supabase access token before using the admin workflow,
+send it to `GET /auth/me`:
+
+```text
+Authorization: Bearer <supabase-access-token>
+```
+
+The endpoint returns the authenticated user's Supabase subject, email, and
+Healix role. It does not expose the JWT or the signing secret.
 
 ## Database
 
