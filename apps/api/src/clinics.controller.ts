@@ -2,12 +2,13 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   Param,
   Post,
   Query,
-  UnauthorizedException
+  UseGuards
 } from "@nestjs/common";
+import { Roles } from "./auth.decorator";
+import { RolesGuard, SupabaseAuthGuard } from "./auth.guard";
 import { CreateClinicRequest, ReviewClinicRequest } from "./clinics.dto";
 import { ClinicsService } from "./clinics.service";
 
@@ -30,14 +31,12 @@ export class ClinicsController {
   }
 
   @Post(":clinicId/review")
+  @UseGuards(SupabaseAuthGuard, RolesGuard)
+  @Roles("ADMIN")
   reviewClinic(
     @Param("clinicId") clinicId: string,
-    @Body() request: ReviewClinicRequest,
-    @Headers("x-admin-key") adminKey?: string
+    @Body() request: ReviewClinicRequest
   ) {
-    if (!process.env.ADMIN_API_KEY || adminKey !== process.env.ADMIN_API_KEY) {
-      throw new UnauthorizedException("Admin authorization is required.");
-    }
     return this.clinicsService.reviewClinic(clinicId, request);
   }
 }

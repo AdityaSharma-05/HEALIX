@@ -34,9 +34,16 @@ npm run dev:api
 - Submit clinic onboarding: `POST http://localhost:4000/clinics/onboarding`
 - Review a clinic: `POST http://localhost:4000/clinics/:clinicId/review`
 
-The clinic review endpoint requires the development-only `x-admin-key` header
-matching `ADMIN_API_KEY`. Replace this temporary mechanism with authenticated
-admin RBAC before production.
+The clinic review endpoint requires a Supabase access token:
+
+```text
+Authorization: Bearer <supabase-access-token>
+```
+
+The token must contain an `app_metadata.role` or `user_metadata.role` value of
+`ADMIN`. Configure `SUPABASE_JWT_SECRET` in the API environment. This role
+check is application authorization; Supabase remains responsible for issuing
+and managing identities.
 
 ## Database
 
